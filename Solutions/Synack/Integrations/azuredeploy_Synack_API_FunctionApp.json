@@ -166,7 +166,7 @@
             },
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://aka.ms/sentinel-synack-functionapp"
+              "value": "https://github.com/synack/Azure-Sentinel/blob/synack-integration-solution-dev/Solutions/Synack/Integrations/AzureFunctionSynack.zip?raw=true"
             }
           ]
         }
