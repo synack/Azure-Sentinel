@@ -7,6 +7,7 @@ exports.runSync = function runSync(context) {
     synackService.fetchSynackVulns(context)
         .then((synackVulns) => {
 
+            console.log(`fetched total ${synackVulns.length} vulnerabilities from Synack`)
             context.log(`fetched total ${synackVulns.length} vulnerabilities from Synack`)
             azureService.getAzureAuthenticationToken(context)
                 .then((accessToken) => {
@@ -61,6 +62,8 @@ exports.runSync = function runSync(context) {
                                     })
                             })
                             .catch((error) => {
+                                console.error('error occurred while trying to create/update a Sentinel incident')
+                                console.error(error)
                                 context.error('error occurred while trying to create/update a Sentinel incident')
                                 context.error(error)
                             })
