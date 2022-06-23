@@ -55,6 +55,7 @@ exports.runSync = function runSync(context) {
                         context.log.error(`error occurred while trying to get Azure authentication token \n ${error}`)
                         reject(error)
                     })
+
             })
             .catch((error) => {
                 context.log.error(`The synchronization failed. Error occurred while trying to fetch vulnerabilities from Synack: ${error}`)
