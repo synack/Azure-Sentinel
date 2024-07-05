@@ -183,9 +183,9 @@ function compileIncidentDescription(vulnJson) {
     exploitableLocationsHtml += '</ol>'
     exploitableLocationsHtml = `<h4>Vulnerability Locations</h4>${exploitableLocationsHtml}`
 
-    let listingHtml = `<h4>Assessment</h4>Name: ${listingJson['codename']}<br>Link: ${listingJson['link']}<br>Category: ${listingJson['category']}`
-    let cvssHtml = `<h4>CVSS</h4>Score ${cvssScore}<br>Vector ${cvssVector}`
-    let linkHtml = `<a href=\"${link}\">${link}</a>`
+    let listingHtml = `<h4>Assessment</h4>Name: ${wrapData("assessment", listingJson['codename'])}<br>Link: ${listingJson['link']}<br>Category: ${listingJson['category']}`
+    let cvssHtml = `<h4>CVSS</h4>Score ${wrapData("cvss", cvssScore)}<br>Vector ${cvssVector}`
+    let linkHtml = `<a href=\"${link}\">${wrapData("synack_link", link)}</a>`
 
     let validationStepsHtml = '<h4>Steps to Reproduce</h4>'
     for (let stepNumber = 1; stepNumber <= validationStepsJsonArray.length; stepNumber++) {
@@ -202,13 +202,17 @@ function compileIncidentDescription(vulnJson) {
     let updatedHtmlPart = updated ? `updated ${getDateFromIso8601UTC(updated)}` : ''
     let resolvedHtmlPart = resolved ? `resolved ${getDateFromIso8601UTC(resolved)}` : ''
     let datesHtml = `<h4>Dates</h4>${updatedHtmlPart}<br>${resolvedHtmlPart}<br>${closedHtmlPart}`
-    let categoryHtml = `<h4>Category</h4>${category}`
-    let descriptionHtml = `<h4>Description</h4>${description}`
-    let impactHtml = `<h4>Impact</h4>\n${impact}`
-    let recommendedFixHtml = `<h4>Recommended Fix</h4>\n${recommendedFix}`
+    let categoryHtml = `<h4>Category</h4>${wrapData('category', category)}`
+    let descriptionHtml = `<h4>Description</h4>${wrapData('description', description)}`
+    let impactHtml = `<h4>Impact</h4>\n${wrapData('impact', impact)}`
+    let recommendedFixHtml = `<h4>Recommended Fix</h4>\n${wrapData('recommended_fix', recommendedFix)}`
 
-    let incidentDescription = `<br>${linkHtml}<br>${categoryHtml}${listingHtml}${descriptionHtml}${impactHtml}\n${exploitableLocationsHtml}${validationStepsHtml}${recommendedFixHtml}${cvssHtml}${datesHtml}`
+    let incidentDescription = `<br>${linkHtml}<br>${cvssHtml}${datesHtml}${categoryHtml}${listingHtml}${descriptionHtml}${impactHtml}\n${exploitableLocationsHtml}${recommendedFixHtml}${validationStepsHtml}`
     return incidentDescription
+}
+
+function wrapData(name, value){
+    return `<span class="synack-data" name="${name}">${value}</span>`
 }
 
 function getValidationStep(stepNumber, validationSteps) {
