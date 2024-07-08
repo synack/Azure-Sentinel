@@ -1,0 +1,7 @@
+{
+  "name": "synack-helper-for-security-copilot",
+  "type": "module",
+  "dependencies": {
+    "node-html-parser": "^6.1.13"
+  }
+}
