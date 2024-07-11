@@ -75,7 +75,8 @@ exports.createOrUpdateIncident = function createOrUpdateIncident(vulnJson, acces
                     "status": incidentDto.status.name,
                     "classification": incidentDto.status.classification,
                     "classificationReason": incidentDto.status.classificationReason,
-                    "title": incidentDto.title
+                    "title": incidentDto.title,
+                    "labels": [{labelType: "User", labelName: "synack"}]
                 }
             }
         )
