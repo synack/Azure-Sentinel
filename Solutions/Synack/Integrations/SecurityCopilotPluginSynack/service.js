@@ -18,7 +18,7 @@ const PLUGIN_JSON = {
     description_for_human: "Find Synack incidents",
     api: {
         "type": "openapi",
-        "url": "https://synack-helper-for-copilot.azurewebsites.net/api/copilot?resource=openapi.yaml",
+        "url": "https://synack-helper-for-copilot.azurewebsites.net/api/incidents?resource=openapi.yaml",
         "is_user_authenticated": false
     },
     auth: {
@@ -37,7 +37,7 @@ const YAML = '' +
     'servers:\n' +
     '  - url: https://synack-helper-for-copilot.azurewebsites.net/api/\n' +
     'paths:\n' +
-    '  /copilot:\n' +
+    '  /incidents:\n' +
     '    get:\n' +
     '      operationId: getIncidents\n' +
     '      summary: Get a list of Synack Incidents\n' +
@@ -143,8 +143,9 @@ async function fetchIncidents(context, accessToken, incidents, nextLink) {
                         resolve(incidents)
                     }
                 } else {
-                    context.log.error(`ERROR: could not get incidents`)
-                    reject(responseContent)
+                    context.log.error(`ERROR: Could not get incidents due to request error. Status code: ${response.statusCode}`)
+                    context.log.error(responseContent)
+                    resolve(null)
                 }
             })
         })
@@ -183,7 +184,7 @@ async function getIncidentById(context, accessToken, incidentId) {
                     resolve(synackSentinelIncident)
                 } else {
                     context.log.error(`ERROR: could not get incident with id ${incidentId}`)
-                    reject(responseContent)
+                    resolve(null)
                 }
             })
         })
@@ -247,17 +248,25 @@ async function getIncidentByNumber(context, accessToken, incidentNumber, nextLin
                             context.log(`Incident with number ${incidentNumber} not found on this page. Getting next page of incidents.`)
                             getIncidentByNumber(context, accessToken, incidentNumber, responseJson['nextLink'])
                                 .then((incident) => resolve(incident))
+                                .catch((error) => {
+                                    context.log.error(error)
+                                    resolve(null)
+                                })
                         } else {
-                            let message = `ERROR: could not get incident by number ${incidentNumber}`;
-                            context.log.error(message)
-                            reject(responseContent)
+                            let message = `Could not find incident by number ${incidentNumber}`
+                            context.log(message)
+                            resolve(null)
                         }
                     }
                 } else {
-                    context.log.error(`ERROR: could not get incident by number ${incidentNumber}`)
-                    reject(responseContent)
+                    context.log.error(`ERROR: Could not find incident by number ${incidentNumber} due to request error. Status code: ${response.statusCode}`)
+                    context.log.error(responseContent)
+                    resolve(null)
                 }
             })
+        })
+        request.on('error', function (requestError) {
+            context.log.error(`REQUEST ERROR: ${requestError}`)
         })
         request.end()
     }))

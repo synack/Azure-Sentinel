@@ -15,19 +15,26 @@ module.exports = async function (context, req) {
             };
         } else if (req.query.incidentId) {
             let incident = await service.getIncidentById(context, await service.getAzureAuthenticationToken(), req.query.incidentId)
+            let status = incident == null ? 404 : 200
             context.res = {
+                status: status,
                 body: incident
             }
         } else if (req.query.incidentNumber) {
             let incident = await service.getIncidentByNumber(context, await service.getAzureAuthenticationToken(), req.query.incidentNumber)
+            let status = incident == null ? 404 : 200
             context.res = {
+                status: status,
                 body: incident
             }
         }
     } else if (Object.keys(req.query).length === 0) {
         let incidents = await service.fetchIncidents(context, await service.getAzureAuthenticationToken(), [])
+        let status = incidents == null ? 404 : 200
+        let body = incidents == null ? null : {total: incidents.length, incidents: incidents}
         context.res = {
-            body: {total: incidents.length, incidents: incidents}
+            status: status,
+            body: body
         };
     }
 }
